@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trung DT</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400..700&display=swap"
+        rel="stylesheet">
+    <script src="https://kit.fontawesome.com/8a038be4d0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --fa-style-family-classic: "Font Awesome 6 Free";
+            --fa-font-solid: normal 900 1em / 1 "Font Awesome 6 Free";
+        }
+
+        html {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            background-color: #f4f4f4;
+            padding: 12px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            justify-content: space-evenly;
+        }
+
+        .content button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .content button:hover {
+            background-color: #0056b3;
+        }
+
+        #footer {
+            text-align: center;
+            padding-top: 36px;
+            padding-bottom: 36px;
+            background-color: black;
+        }
+
+        #footer a {
+            font-size: 24px;
+            color: white;
+        }
+
+        #footer h2 {
+            padding-top: 12px;
+            font-weight: 100;
+            font-size: 14px;
+            color: white;
+        }
+
+        .participants {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+
+        .participant {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .name {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            flex: 1;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+
+        <button id="startButton">Start</button>
+
+    </div>
+    <div id="footer">
+        <a class="anchor_facebook" href="#facebook"><i class="fa-brands fa-facebook"></i></a>
+        <a class="anchor_instagram" href="#instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a class="anchor_snapchat" href="#snapchat"><i class="fa-brands fa-snapchat"></i></a>
+        <a class="anchor_pinterest" href="#pinterest"><i class="fa-brands fa-pinterest-p"></i></a>
+        <a class="anchor_linkedin" href="#linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
+        <h2 class="author"><i class="fa-regular fa-copyright"></i>Copyrighted By GK02</h2>
+    </div>
+    <script>
+        const startButton = document.getElementById("startButton");
+        const content = document.querySelector(".content");
+        // Xử lý khi nhấn nút "Start"
+        startButton.addEventListener("click", async () => {
+            const { value: participants } = await Swal.fire({
+                title: "Enter the number of participants",
+                input: "number",
+                inputLabel: "Number of participants",
+                inputPlaceholder: "Enter a number",
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value || value <= 0) {
+                        return "Please enter a valid number!";
+                    }
+                }
+            });
+
+            if (participants) {
+                Swal.fire(`You entered: ${participants} participants`);
+                startButton.style.display = "none";
+
+                // Tạo thẻ participants
+                const participantsDiv = document.createElement("div");
+                participantsDiv.classList.add("participants");
+
+                const participantNumbers = Array.from({ length: participants }, (_, index) => index + 1);
+
+                // Function to shuffle array
+                const shuffleArray = (arr) => {
+                    for (let i = arr.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [arr[i], arr[j]] = [arr[j], arr[i]];
+                    }
+                };
+
+                // Shuffle the numbers
+                //shuffleArray(participantNumbers);
+
+                // Tạo các thẻ con
+                participantNumbers.forEach((num, i) => {
+                    const participantDiv = document.createElement("div");
+                    participantDiv.classList.add("participant");
+
+                    const input = document.createElement("input");
+                    input.classList.add("name");
+                    input.setAttribute("type", "text");
+                    input.setAttribute("placeholder", `Enter a name`);
+
+                    const h3 = document.createElement("h3");
+                    h3.classList.add("số-thứ-tự");
+                    h3.textContent = `${num}.`;
+
+                    // Thêm input và h3 vào participantDiv
+                    participantDiv.appendChild(h3);
+                    participantDiv.appendChild(input);
+
+                    // Thêm participantDiv vào participantsDiv
+                    participantsDiv.appendChild(participantDiv);
+                });
+
+                // Thêm participantsDiv vào content
+                content.appendChild(participantsDiv);
+
+                // Add a "Randomize" button to shuffle again
+                const randomizeButton = document.createElement("button");
+                randomizeButton.textContent = "Randomize";
+                randomizeButton.classList.add("randomize-button");
+
+                randomizeButton.addEventListener("click", () => {
+                    // Shuffle again and update the numbers
+                    shuffleArray(participantNumbers);
+                    const allParticipants = document.querySelectorAll(".participant");
+                    allParticipants.forEach((div, index) => {
+                        const h3 = div.querySelector("h3");
+                        h3.textContent = `${participantNumbers[index]}.`;
+                    });
+                });
+
+                content.appendChild(randomizeButton);
+            }
+        }
+        );
+    </script>
+</body>
+
+</html>
